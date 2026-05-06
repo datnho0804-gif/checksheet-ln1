@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Checksheet | SmartAssist * SunSync Lộc Ninh 1</title>
+    <link rel="manifest" href="manifest.json">
+    
+    <meta name="theme-color" content="#FF7E5F">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"> 
+    
+    <script src="https://unpkg.com/exceljs/dist/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #FF7E5F; 
+            --primary-gradient: linear-gradient(135deg, #FF7E5F 0%, #FEB47B 100%);
+            --secondary: #2B5876;
+            --secondary-gradient: linear-gradient(135deg, #2B5876 0%, #4E4376 100%);
+            --bg: #F4F7FB;
+            --card: #FFFFFF;
+            --text-main: #2D3748;
+            --text-muted: #718096;
+            --border: #E2E8F0;
+            --success: #38A169;
+            --warning: #D69E2E;
+            --danger: #E53E3E;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            --focus-ring: 0 0 0 3px rgba(255, 126, 95, 0.3);
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
+            color: var(--text-main); 
+            margin: 0; 
+            padding: 0; 
+            line-height: 1.6; 
+            -webkit-font-smoothing: antialiased;
+            overscroll-behavior: none; 
+            -webkit-user-select: none; 
+            user-select: none;
+        }
+
+        input, textarea {
+            -webkit-user-select: auto;
+            user-select: auto;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+        
+        .header { 
+            background: var(--secondary-gradient); 
+            color: white; 
+            padding: 16px 24px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            border-bottom: 3px solid #FF7E5F;
+        }
+        .header-title { display: flex; flex-direction: column; }
+        .header-title h1 { 
+            margin: 0; 
+            font-size: 22px; 
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        .header-title p { margin: 4px 0 0 0; font-size: 13px; color: #E2E8F0; font-weight: 500; }
+        .online-status { 
+            background: rgba(255,255,255,0.2); 
+            backdrop-filter: blur(4px);
+            padding: 4px 12px; 
+            border-radius: 20px; 
+            font-size: 12px; 
+            font-weight: 600; 
+            margin-top: 8px; 
+            width: fit-content; 
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .container { 
+            max-width: 800px; 
+            margin: 30px auto; 
+            padding: 0 16px; 
+            padding-bottom: 90px; 
+            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .cs-wrapper { width: 100%; }
+        
+        .cs-page-title {
+            text-align: center; 
+            color: var(--secondary); 
+            margin-top: 0;
+            font-weight: 800;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .cs-status { text-align: center; font-size: 15px; font-weight: 600; color: var(--text-muted); margin-bottom: 24px; }
+        
+        .cs-card { 
+            background: var(--card); 
+            padding: 24px; 
+            border-radius: 16px; 
+            box-shadow: var(--shadow); 
+            margin-bottom: 24px; 
+            border: 1px solid rgba(255,255,255,0.8);
+            transition: transform 0.2s ease;
+        }
+        
+        .cs-group-title { 
+            background: #EDF2F7; 
+            padding: 10px 14px; 
+            border-radius: 8px; 
+            font-weight: 700; 
+            margin-top: 24px; 
+            margin-bottom: 16px; 
+            border-left: 5px solid #FF7E5F; 
+            color: var(--secondary);
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .cs-form-group { margin-bottom: 16px; display: flex; flex-direction: column; }
+        .cs-form-group label { font-size: 14px; margin-bottom: 8px; font-weight: 600; color: var(--text-main);}
+        .cs-form-group input { 
+            width: 100%; 
+            padding: 12px 14px; 
+            border: 1.5px solid var(--border); 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-family: 'Inter', sans-serif;
+            box-sizing: border-box; 
+            background-color: #F8FAFC;
+            transition: all 0.2s ease;
+        }
+        .cs-form-group input:focus { 
+            border-color: #FF7E5F; 
+            outline: none; 
+            background-color: #FFF; 
+            box-shadow: var(--focus-ring);
+        }
+        
+        .cs-btn { 
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+            width: 100%; padding: 16px; color: white; border: none; border-radius: 12px; 
+            font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 20px; 
+            transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(255, 126, 95, 0.2);
+        }
+        .cs-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(255, 126, 95, 0.3); }
+        .cs-btn-save { background: var(--primary-gradient); }
+        
+        .cs-global-info { display: flex; gap: 20px; }
+        .cs-global-info .cs-form-group { flex: 1; }
+        
+        .cs-wrapper details { 
+            background: var(--card); padding: 12px 16px; border-radius: 10px; 
+            margin-bottom: 12px; border: 1px solid var(--border); transition: all 0.2s ease;
+        }
+        .cs-wrapper details:hover { border-color: #CBD5E0; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .cs-wrapper details[open] { border-left: 4px solid var(--success); }
+        .cs-wrapper summary { 
+            font-weight: 600; font-size: 15px; cursor: pointer; 
+            display: flex; justify-content: space-between; align-items: center; 
+            color: var(--secondary); list-style: none;
+        }
+        .cs-wrapper summary::-webkit-details-marker { display: none; }
+        
+        .cs-action-btns { display: flex; gap: 8px; }
+        .cs-edit-btn { color: #975A16; font-size: 13px; font-weight: 700; padding: 6px 12px; background: #FEEBC8; border-radius: 6px; border: none; cursor: pointer; transition: background 0.2s; }
+        .cs-delete-btn { color: #C53030; font-size: 13px; font-weight: 700; padding: 6px 12px; background: #FED7D7; border-radius: 6px; border: none; cursor: pointer; transition: background 0.2s; }
+        
+        .cs-data-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 16px; font-size: 14px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+        .cs-data-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+        .cs-data-table tr:last-child td { border-bottom: none; }
+        .cs-data-table tr:nth-child(even) { background-color: #F8FAFC; }
+        .cs-data-table td:nth-child(1) { width: 65%; color: var(--text-muted); font-weight: 500; }
+        .cs-data-table td:nth-child(2) { font-weight: 700; text-align: right; color: var(--secondary); }
+        
+        .station-input-wrapper { 
+            display: flex; align-items: stretch; border: 2px solid var(--border); 
+            border-radius: 8px; overflow: hidden; background: #F8FAFC; transition: all 0.2s ease;
+        }
+        .station-input-wrapper:focus-within { border-color: #FF7E5F; box-shadow: var(--focus-ring); background: #FFF; }
+        .station-prefix { 
+            background: #EDF2F7; color: var(--secondary); padding: 12px 18px; 
+            font-weight: 800; font-size: 18px; border-right: 1px solid var(--border); display: flex; align-items: center;
+        }
+        .station-input-wrapper input { 
+            border: none; border-radius: 0; outline: none; background: transparent;
+            font-size: 20px; color: #FF7E5F; text-align: center; padding-left: 0;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #E2E8F0;
+            padding: 10px 0 calc(10px + env(safe-area-inset-bottom)); 
+            z-index: 999;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .bottom-nav button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--secondary);
+            gap: 4px;
+            cursor: pointer;
+        }
+        
+        .bottom-nav span {
+            font-size: 11px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 85px; 
+            right: 20px;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            color: white;
+            font-size: 24px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(255, 126, 95, 0.4);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        @media (max-width: 600px) {
+            .cs-global-info { flex-direction: column; gap: 0; }
+            .header-title h1 { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-title">
+        <h1>CHECKSHEET THB</h1>
+        <p>Dấu "." thay cho "/" khi nhập liệu</p>
+        <div class="online-status" id="status-badge">
+            <span style="display:inline-block; width:8px; height:8px; background:#48bb78; border-radius:50%; box-shadow: 0 0 5px #48bb78;"></span>
+            CHẾ ĐỘ OFFLINE
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="cs-wrapper">
+        <h2 class="cs-page-title">TRẠM HỢP BỘ LỘC NINH 1</h2>
+        <div class="cs-status" id="cs-status-text">Đã lưu: 0 Trạm</div>
+        
+        <div class="cs-card" id="cs-saved-stations-card" style="display: none; border-left: 5px solid var(--success);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 16px;">
+                <h3 style="margin: 0; color: var(--success); font-size: 18px; display: flex; align-items: center; gap: 8px;">
+                    📋 Các trạm đã lưu
+                </h3>
+            </div>
+            <div id="cs-saved-list"></div>
+        </div>
+
+        <div class="cs-card">
+            <div class="cs-global-info">
+                <div class="cs-form-group">
+                    <label>Người kiểm tra</label>
+                    <input type="text" id="nguoi_kiem_tra" placeholder="VD: Nguyễn Thành Đạt">
+                </div>
+                <div class="cs-form-group">
+                    <label>Ngày kiểm tra</label>
+                    <input type="date" id="ngay_kiem_tra">
+                </div>
+            </div>
+            <hr style="border: 0; border-top: 1px dashed #CBD5E0; margin: 20px 0;">
+            <div class="cs-global-info">
+                <div class="cs-form-group">
+                    <label>Tên Trạm (Chỉ nhập số)</label>
+                    <div class="station-input-wrapper">
+                        <span class="station-prefix">T</span>
+                        <input type="tel" id="ten_tram" maxlength="2" placeholder="39" oninput="handleStationInput(this)" style="font-weight: 800;">
+                    </div>
+                </div>
+                <div class="cs-form-group">
+                    <label>Thời gian</label>
+                    <input type="time" id="thoi_gian">
+                </div>
+            </div>
+        </div>
+
+        <div class="cs-card" id="cs-form-container"></div>
+        
+        <button class="cs-btn cs-btn-save" id="btn-save" onclick="saveStation()">
+            💾 LƯU TRẠM NÀY
+        </button>
+    </div>
+</div>
+
+<button class="fab" onclick="focusInput()">➕</button>
+
+<div class="bottom-nav">
+    <button onclick="scrollToTop()">
+        🏠
+        <span>Trang chủ</span>
+    </button>
+    <button onclick="focusInput()">
+        📝
+        <span>Nhập mới</span>
+    </button>
+    <button onclick="exportRealExcel()">
+        📊
+        <span>Xuất Excel</span>
+    </button>
+</div>
+
+<script>
+// ==========================================
+// 1. CẤU HÌNH THÔNG SỐ
+// ==========================================
+const csParameters = [
+    { id: 'rmu_dongdien', label: '1. Dòng điện phase A/B/C', group: 'RMU', format: '2' },
+    { id: 'rmu_solan', label: '2. Số lần đóng cắt', group: 'RMU', format: '3' },
+    { id: 'rmu_sf6', label: '3. Áp suất khí SF6', group: 'RMU', format: 'sf6' },
+    { id: 'rmu_ups', label: '4. Điện áp vào/ra UPS', group: 'RMU', format: '3' },
+    { id: 'mba_mucdau', label: '1. Mức dầu', group: 'Transformer', format: '2' },
+    { id: 'mba_nd_cuonday', label: '2. Nhiệt độ cuộn dây/max', group: 'Transformer', format: 'auto_2_2' },
+    { id: 'mba_nd_dau', label: '3. Nhiệt độ dầu/max', group: 'Transformer', format: 'auto_2_2' },
+    { id: 'mba_nd_cuonday_scada', label: '4. Nhiệt độ cuộn dây SCADA', group: 'Transformer', format: '2' },
+    { id: 'mba_nd_dau_scada', label: '5. Nhiệt độ dầu SCADA', group: 'Transformer', format: '2' },
+    { id: 'inv1_congsuat', label: '1. Công suất MW', group: 'Inverter 1', format: '4' },
+    { id: 'inv1_igbt1', label: '2. Nhiệt độ IGBT U1 PM1/3/5', group: 'Inverter 1', format: 'auto_2_2_2' },
+    { id: 'inv1_igbt2', label: '3. Nhiệt độ IGBT U2 PM1/3/5', group: 'Inverter 1', format: 'auto_2_2_2' },
+    { id: 'inv1_quat', label: '4. Tốc độ quạt U1/U2', group: 'Inverter 1', format: 'var_4_4' },
+    { id: 'inv1_dongro', label: '5. Dòng rò U1/U2', group: 'Inverter 1', format: '2' },
+    { id: 'inv1_cuoncam', label: '6. Nhiệt độ cuộn cảm (L) U1/U2', group: 'Inverter 1', format: 'var_3_3' },
+    { id: 'inv1_khoanginv', label: '7. Nhiệt độ khoang INV U1/U2', group: 'Inverter 1', format: 'auto_2_2' },
+    { id: 'inv1_khoangac', label: '8. Nhiệt độ khoang AC U1/U2', group: 'Inverter 1', format: 'auto_2_2' },
+    { id: 'inv1_vgnd', label: '9. Negative Vgnd', group: 'Inverter 1', format: 'var_3_3' },
+    { id: 'inv1_cachdien', label: '10. Điện trở cách điện phía AC', group: 'Inverter 1', format: '4' },
+    { id: 'inv1_thanhcai', label: '11. Nhiệt độ thanh cái U1/U2', group: 'Inverter 1', format: 'auto_2_2' },
+    { id: 'inv2_congsuat', label: '1. Công suất MW', group: 'Inverter 2', format: '4' },
+    { id: 'inv2_igbt1', label: '2. Nhiệt độ IGBT U1 PM1/3/5', group: 'Inverter 2', format: 'auto_2_2_2' },
+    { id: 'inv2_igbt2', label: '3. Nhiệt độ IGBT U2 PM1/3/5', group: 'Inverter 2', format: 'auto_2_2_2' },
+    { id: 'inv2_quat', label: '4. Tốc độ quạt U1/U2', group: 'Inverter 2', format: 'var_4_4' },
+    { id: 'inv2_dongro', label: '5. Dòng rò U1/U2', group: 'Inverter 2', format: '2' },
+    { id: 'inv2_cuoncam', label: '6. Nhiệt độ cuộn cảm (L) U1/U2', group: 'Inverter 2', format: 'var_3_3' },
+    { id: 'inv2_khoanginv', label: '7. Nhiệt độ khoang INV U1/U2', group: 'Inverter 2', format: 'auto_2_2' },
+    { id: 'inv2_khoangac', label: '8. Nhiệt độ khoang AC U1/U2', group: 'Inverter 2', format: 'auto_2_2' },
+    { id: 'inv2_vgnd', label: '9. Negative Vgnd', group: 'Inverter 2', format: 'var_3_3' },
+    { id: 'inv2_cachdien', label: '10. Điện trở cách điện phía AC', group: 'Inverter 2', format: '4' },
+    { id: 'inv2_thanhcai', label: '11. Nhiệt độ thanh cái U1/U2', group: 'Inverter 2', format: 'auto_2_2' }
+];
+
+// ==========================================
+// 2. LOGIC GIAO DIỆN & LƯU TRỮ
+// ==========================================
+
+let savedData = JSON.parse(localStorage.getItem('ln1_checksheet_data')) || [];
+let isEditingIndex = -1; 
+
+function updateSavedList() {
+    const listDiv = document.getElementById('cs-saved-list');
+    const card = document.getElementById('cs-saved-stations-card');
+    document.getElementById('cs-status-text').innerText = `Đã lưu: ${savedData.length} Trạm`;
+    
+    if (savedData.length === 0) {
+        card.style.display = 'none'; listDiv.innerHTML = ''; return;
+    }
+    
+    card.style.display = 'block'; listDiv.innerHTML = '';
+    savedData.forEach((station, index) => {
+        listDiv.innerHTML += `
+            <details>
+                <summary>
+                    <span style="display:flex; align-items:center; gap:8px;">
+                        <span style="background:var(--bg); padding:4px 8px; border-radius:6px; border:1px solid var(--border);">📍 ${station.ten_tram}</span> 
+                        <span style="color:var(--text-muted); font-size:13px;">🕒 ${station.thoi_gian}</span>
+                    </span>
+                    <div class="cs-action-btns">
+                        <button class="cs-edit-btn" onclick="editStation(${index}, event)">Sửa</button>
+                        <button class="cs-delete-btn" onclick="deleteStation(${index}, event)">Xóa</button>
+                    </div>
+                </summary>
+                <table class="cs-data-table">
+                    ${csParameters.map(p => `<tr><td>${p.label}</td><td>${station.values[p.id] || '<span style="color:#CBD5E0;">-</span>'}</td></tr>`).join('')}
+                </table>
+            </details>
+        `;
+    });
+}
+
+function handleStationInput(el) {
+    el.value = el.value.replace(/[^0-9]/g, '');
+    if (el.value.length === 2 && !document.getElementById('thoi_gian').value) {
+        const now = new Date(); 
+        document.getElementById('thoi_gian').value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    }
+}
+
+function initChecksheet() {
+    document.getElementById('ngay_kiem_tra').valueAsDate = new Date();
+    const container = document.getElementById('cs-form-container'); 
+    let currentGroup = '';
+    csParameters.forEach(param => {
+        if (param.group !== currentGroup) {
+            currentGroup = param.group; 
+            container.innerHTML += `<div class="cs-group-title">${currentGroup}</div>`;
+        }
+        container.innerHTML += `<div class="cs-form-group"><label>${param.label}</label><input inputmode="decimal" id="${param.id}" oninput="handleInput(event, '${param.format}', '${param.id}')"></div>`;
+    });
+}
+
+function handleInput(e, format, id) {
+    if (!format) return; 
+    let val = e.target.value.replace(/,/g, '.'); 
+    if (id !== 'rmu_sf6') val = val.replace(/\./g, '/');
+    val = val.replace(/[^0-9\.\/]/g, ''); 
+    let maxLength = 999;
+    
+    if (format === '2') maxLength = 2; 
+    else if (format === '3') maxLength = 3; 
+    else if (format === '4' || format === 'sf6') maxLength = 4; 
+    else if (format === 'auto_2_2_2') {
+        maxLength = 8; let nums = val.replace(/\//g, '');
+        if (nums.length > 2) nums = nums.substring(0,2) + '/' + nums.substring(2);
+        if (nums.length > 5) nums = nums.substring(0,5) + '/' + nums.substring(5);
+        val = nums.substring(0, 8);
+    }
+    else if (format === 'auto_2_2') { 
+        maxLength = 5; let nums = val.replace(/\//g, ''); 
+        if (nums.length > 2) nums = nums.substring(0,2) + '/' + nums.substring(2); 
+        val = nums.substring(0, 5); 
+    }
+    else if (format === 'var_4_4') maxLength = 9; 
+    else if (format === 'var_3_3') maxLength = 7; 
+    
+    if (val.length > maxLength) val = val.substring(0, maxLength); 
+    e.target.value = val;
+    
+    if (val.length === maxLength) {
+        let inputs = Array.from(document.querySelectorAll('#cs-form-container input'));
+        let index = inputs.indexOf(e.target); 
+        if (index > -1 && index < inputs.length - 1) inputs[index + 1].focus();
+    }
+}
+
+function saveStation() {
+    let numStr = document.getElementById('ten_tram').value.trim(); 
+    const thoiGian = document.getElementById('thoi_gian').value;
+    
+    if (!numStr || !thoiGian) { 
+        alert("⚠️ Vui lòng nhập số Trạm và Thời gian!"); 
+        document.getElementById('ten_tram').focus(); return; 
+    }
+    let tenTram = "T" + numStr.padStart(2, '0'); 
+    
+    let stationData = { ten_tram: tenTram, thoi_gian: thoiGian, values: {} };
+    csParameters.forEach(param => { 
+        stationData.values[param.id] = document.getElementById(param.id).value; 
+        document.getElementById(param.id).value = ''; 
+    });
+    
+    // FIX 2: Sửa lỗi ghi đè dữ liệu sai khi đang ở chế độ Edit
+    if (isEditingIndex !== -1) {
+        savedData[isEditingIndex] = stationData; 
+        isEditingIndex = -1; 
+        let btnSave = document.getElementById('btn-save');
+        btnSave.innerHTML = '💾 LƯU TRẠM NÀY'; 
+        btnSave.style.background = 'var(--primary-gradient)';
+        btnSave.style.color = 'white';
+    } else { 
+        savedData.push(stationData); 
+    }
+    
+    savedData.sort((a, b) => a.ten_tram.localeCompare(b.ten_tram));
+    
+    localStorage.setItem('ln1_checksheet_data', JSON.stringify(savedData));
+    document.getElementById('ten_tram').value = ''; 
+    document.getElementById('thoi_gian').value = ''; 
+    updateSavedList(); 
+    document.getElementById('ten_tram').focus();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function editStation(index, event) {
+    event.stopPropagation();
+    if(confirm("Nạp dữ liệu trạm này lên Form để sửa?")) {
+        let station = savedData[index];
+        document.getElementById('ten_tram').value = station.ten_tram.replace('T', '');
+        document.getElementById('thoi_gian').value = station.thoi_gian;
+        
+        csParameters.forEach(p => {
+            let el = document.getElementById(p.id);
+            if (el) el.value = station.values[p.id] || "";
+        });
+        
+        // FIX 3: Đã xóa dòng "savedData.splice(index, 1);" để tránh lỗi mất data khi chưa lưu lại
+        isEditingIndex = index;
+        
+        let btnSave = document.getElementById('btn-save');
+        btnSave.innerHTML = '🔄 CẬP NHẬT TRẠM';
+        btnSave.style.background = '#F6E05E'; btnSave.style.color = '#744210';
+        
+        document.getElementById('cs-status-text').innerHTML = `<span style="color:#D69E2E;">Đang sửa thông số: ${station.ten_tram}</span>`;
+        updateSavedList();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+function deleteStation(index, event) {
+    event.stopPropagation();
+    if(confirm("Xóa trạm này khỏi danh sách?")) {
+        savedData.splice(index, 1);
+        localStorage.setItem('ln1_checksheet_data', JSON.stringify(savedData));
+        updateSavedList();
+    }
+}
+
+function getColLetter(colIndex) {
+    let s = "";
+    while(colIndex >= 0) {
+        s = String.fromCharCode(colIndex % 26 + 65) + s;
+        colIndex = Math.floor(colIndex / 26) - 1;
+    }
+    return s;
+}
+
+// ==========================================
+// 3. XUẤT FILE EXCEL THẬT (.XLSX)
+// ==========================================
+async function exportRealExcel() {
+    if (!savedData || savedData.length === 0) { 
+        alert("Chưa có dữ liệu trạm nào để xuất!"); return; 
+    }
+
+    try {
+        const nguoiKiemTra = document.getElementById('nguoi_kiem_tra').value || "..................";
+        const ngayKiemTra = document.getElementById('ngay_kiem_tra').value;
+        let dateObj = ngayKiemTra ? new Date(ngayKiemTra) : new Date();
+        let formattedDate = `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth() + 1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+
+        const workbook = new ExcelJS.Workbook();
+        const sheet = workbook.addWorksheet('Checksheet LN1', { views: [{ showGridLines: true }] });
+
+        const borderStyle = {
+            top: {style:'thin'}, left: {style:'thin'}, bottom: {style:'thin'}, right: {style:'thin'}
+        };
+        const centerAlign = { vertical: 'middle', horizontal: 'center' };
+        const leftAlign = { vertical: 'middle', horizontal: 'left' };
+
+        sheet.getRow(1).values = [`Họ và tên: ${nguoiKiemTra}`, `Ngày/Tháng/Năm: ${formattedDate}`];
+        sheet.mergeCells('A1:C1'); sheet.mergeCells('D1:F1');
+        sheet.getRow(1).font = { bold: true, size: 12 };
+
+        let headerRow = ['T'];
+        savedData.forEach(s => headerRow.push(s.ten_tram));
+        const row2 = sheet.addRow(headerRow);
+        row2.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+        row2.eachCell((cell) => {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF2B5876' } };
+            cell.alignment = centerAlign;
+            cell.border = borderStyle;
+        });
+
+        let timeRow = ['Thời Gian'];
+        savedData.forEach(s => timeRow.push(s.thoi_gian));
+        const row3 = sheet.addRow(timeRow);
+        row3.font = { bold: true };
+        row3.eachCell((cell) => {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEDF2F7' } };
+            cell.alignment = centerAlign;
+            cell.border = borderStyle;
+        });
+
+        let currentGroup = '';
+        let rowMapping = {}; 
+
+        csParameters.forEach((param) => {
+            if (param.group !== currentGroup) {
+                currentGroup = param.group;
+                let groupRow = sheet.addRow([currentGroup.toUpperCase()]);
+                groupRow.font = { bold: true, color: { argb: 'FFC53030' } }; 
+                groupRow.eachCell(cell => { cell.border = borderStyle; });
+                sheet.mergeCells(`A${groupRow.number}:${getColLetter(savedData.length)}${groupRow.number}`);
+            }
+
+            let safeLabel = param.label.replace(/^\d+\.\s*/, ''); 
+            let rowData = [safeLabel];
+            savedData.forEach(s => rowData.push(s.values[param.id] || ""));
+            
+            let dataRow = sheet.addRow(rowData);
+            rowMapping[param.id] = dataRow.number; 
+
+            dataRow.eachCell((cell, colNumber) => {
+                cell.border = borderStyle;
+                cell.alignment = colNumber === 1 ? leftAlign : centerAlign;
+            });
+        });
+
+        sheet.getColumn(1).width = 35; 
+        for(let i=2; i<=savedData.length + 1; i++) {
+            sheet.getColumn(i).width = 12; 
+        }
+
+        sheet.addRow([]); 
+        let linkHeader = sheet.addRow(['LINK. 15', 'Copy paste vào link.15']);
+        linkHeader.font = { bold: true, italic: true };
+        
+        const buildFormulaRow = (title, sourceParamId, formulaType) => {
+            let targetRowObj = sheet.addRow([title]);
+            targetRowObj.getCell(1).border = borderStyle;
+            targetRowObj.getCell(1).font = { bold: true };
+            
+            let sourceRowIndex = rowMapping[sourceParamId];
+
+            savedData.forEach((_, idx) => {
+                let colLtr = getColLetter(idx + 1);
+                let cell = targetRowObj.getCell(idx + 2);
+                cell.border = borderStyle;
+                cell.alignment = centerAlign;
+                
+                if(sourceRowIndex) {
+                    if (formulaType === 'RIGHT') cell.value = { formula: `RIGHT(${colLtr}${sourceRowIndex}, 2)` };
+                    else if (formulaType === 'LEFT') cell.value = { formula: `LEFT(${colLtr}${sourceRowIndex}, 2)` };
+                    else cell.value = { formula: `${colLtr}${sourceRowIndex}` }; 
+                }
+            });
+        };
+
+        buildFormulaRow("Nhiệt độ cuộn dây MAX", 'mba_nd_cuonday', 'RIGHT');
+        buildFormulaRow("Nhiệt độ dầu MAX", 'mba_nd_dau', 'RIGHT');
+        buildFormulaRow("Nhiệt độ cuộn dây", 'mba_nd_cuonday', 'LEFT');
+        buildFormulaRow("Nhiệt độ dầu", 'mba_nd_dau', 'LEFT');
+        buildFormulaRow("Mức dầu", 'mba_mucdau', 'DIRECT');
+        buildFormulaRow("số lần đóng mở máy cắt", 'rmu_solan', 'DIRECT');
+        
+        for (let i = 0; i < 5; i++) {
+            let emptyRow = sheet.addRow(['']);
+            emptyRow.getCell(1).border = borderStyle;
+            savedData.forEach((_, idx) => {
+                let cell = emptyRow.getCell(idx + 2);
+                cell.border = borderStyle; 
+            });
+        }
+
+        buildFormulaRow("Cờ chỉ thị áp lực khí SF6", 'rmu_sf6', 'DIRECT');
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        
+        // FIX 4: Sửa cách tải file Excel trên iOS (bằng cách tạo thẻ link ảo)
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `Checksheet_LN1_${formattedDate.replace(/\//g, '')}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        alert("🎉 Xuất file Excel thành công! Đã tạo block copy liền mạch.");
+
+    } catch (err) {
+        console.error(err);
+        alert("Lỗi khi tạo file Excel: " + err.message);
+    }
+}
+
+// ==========================================
+// 4. PHẦN JS NHỎ (TRẢI NGHIỆM APP)
+// ==========================================
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function focusInput() {
+    scrollToTop();
+    setTimeout(() => {
+        const inputTram = document.getElementById('ten_tram');
+        if(inputTram) {
+            inputTram.focus();
+        }
+    }, 400); 
+}
+
+window.onload = () => { initChecksheet(); updateSavedList(); };
+</script>
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('PWA: Service Worker đã đăng ký thành công!'))
+                .catch(err => console.log('PWA: Lỗi đăng ký Service Worker:', err));
+        });
+    }
+</script>
+
+</body>
+</html>
