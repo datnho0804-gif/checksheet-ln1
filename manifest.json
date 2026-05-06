@@ -2,7 +2,7 @@
   "name": "Checksheet Vận Hành Lộc Ninh 1",
   "short_name": "LN1 Checksheet",
   "description": "Ứng dụng ghi chép thông số vận hành nhà máy điện mặt trời Lộc Ninh 1",
-  "start_url": "./IP.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#FF7E5F",
