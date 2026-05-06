@@ -1,6 +1,6 @@
 const CACHE_NAME = 'checksheet-ln1-cache-v1';
 const assets = [
-  './IP.html',
+  './index.html',
   './manifest.json',
   'https://unpkg.com/exceljs/dist/exceljs.min.js',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
