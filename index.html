@@ -541,7 +541,7 @@ function saveStation() {
     const scriptURL = 'https://script.google.com/macros/s/AKfycbygPvCl2AZPotd3dBnpE9AGmGuoXnkgYWqnpGS-uOltrvapXVcGrGK2HZFIetJ9K3pCWA/exec'; 
 
     // Giao thức Fetch API để gửi POST Request tới "hệ thống SCADA" (Google Sheets)
-    if(navigator.onLine && scriptURL !== 'YOUR_WEB_APP_URL_HERE') {
+    if(navigator.onLine && scriptURL !== 'https://script.google.com/macros/s/AKfycbygPvCl2AZPotd3dBnpE9AGmGuoXnkgYWqnpGS-uOltrvapXVcGrGK2HZFIetJ9K3pCWA/exec') {
         fetch(scriptURL, {
             method: 'POST',
             // Phải dùng text/plain để tránh lỗi CORS Preflight
