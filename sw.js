@@ -17,6 +17,11 @@ self.addEventListener('install', e => {
 
 // Trả về dữ liệu từ bộ nhớ đệm khi mất mạng
 self.addEventListener('fetch', e => {
+  // MỞ ĐƯỜNG BYPASS: Bỏ qua không cho Service Worker chặn các request gửi lên Google Script (Giống như đường truyền SCADA đi thẳng)
+  if (e.request.url.includes('script.google.com')) {
+    return; 
+  }
+
   e.respondWith(
     caches.match(e.request).then(response => {
       return response || fetch(e.request);
