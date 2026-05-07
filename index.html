@@ -537,14 +537,14 @@ function saveStation() {
         flatData.push(stationData.values[param.id] || "");
     });
 
-    // ⚠️ LƯU Ý: HÃY DÁN ĐƯỜNG LINK WEB APP CỦA GOOGLE APPS SCRIPT VÀO ĐÂY SAU KHI DEPLOY Ở BƯỚC TRƯỚC
+       // ⚠️ LƯU Ý: ĐƯỜNG LINK WEB APP CỦA GOOGLE APPS SCRIPT
     const scriptURL = 'https://script.google.com/macros/s/AKfycbygPvCl2AZPotd3dBnpE9AGmGuoXnkgYWqnpGS-uOltrvapXVcGrGK2HZFIetJ9K3pCWA/exec'; 
 
     // Giao thức Fetch API để gửi POST Request tới "hệ thống SCADA" (Google Sheets)
-    if(navigator.onLine && scriptURL !== 'https://script.google.com/macros/s/AKfycbygPvCl2AZPotd3dBnpE9AGmGuoXnkgYWqnpGS-uOltrvapXVcGrGK2HZFIetJ9K3pCWA/exec') {
+    // SỬA Ở ĐÂY: Chỉ cần kiểm tra có mạng (navigator.onLine) và link không bị trống
+    if(navigator.onLine && scriptURL !== '') {
         fetch(scriptURL, {
             method: 'POST',
-            // Phải dùng text/plain để tránh lỗi CORS Preflight
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({ data: flatData })
         })
@@ -559,8 +559,9 @@ function saveStation() {
             statusBadge.innerHTML = '<span style="display:inline-block; width:8px; height:8px; background:#E53E3E; border-radius:50%; box-shadow: 0 0 5px #E53E3E;"></span> LƯU OFFLINE (LỖI ĐƯỜNG TRUYỀN)';
         });
     } else {
-        statusBadge.innerHTML = '<span style="display:inline-block; width:8px; height:8px; background:#E53E3E; border-radius:50%; box-shadow: 0 0 5px #E53E3E;"></span> LƯU OFFLINE (KHÔNG CÓ MẠNG HOẶC CHƯA GẮN LINK)';
+        statusBadge.innerHTML = '<span style="display:inline-block; width:8px; height:8px; background:#E53E3E; border-radius:50%; box-shadow: 0 0 5px #E53E3E;"></span> LƯU OFFLINE (MẤT MẠNG)';
     }
+
     // -----------------------------------------------------
 
     document.getElementById('ten_tram').value = ''; 
