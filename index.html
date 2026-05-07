@@ -537,14 +537,15 @@ function saveStation() {
         flatData.push(stationData.values[param.id] || "");
     });
 
-       // ⚠️ LƯU Ý: ĐƯỜNG LINK WEB APP CỦA GOOGLE APPS SCRIPT
+    // ĐƯỜNG LINK WEB APP CỦA GOOGLE APPS SCRIPT
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyOzv13TgAI3_z7iFDs43b5LwjQtY85eZex0A7ZLmZkTN1ixM3p2EUNKgT0_N-ML1IQhg/exec'; 
 
     // Giao thức Fetch API để gửi POST Request tới "hệ thống SCADA" (Google Sheets)
-    // SỬA Ở ĐÂY: Chỉ cần kiểm tra có mạng (navigator.onLine) và link không bị trống
+    // SỬA Ở ĐÂY: Thêm redirect: 'follow' để bám sát luồng điều hướng của Google
     if(navigator.onLine && scriptURL !== '') {
         fetch(scriptURL, {
             method: 'POST',
+            redirect: 'follow',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify({ data: flatData })
         })
