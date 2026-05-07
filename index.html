@@ -101,6 +101,8 @@
             animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        /* CSS tạo hiệu ứng nhấp nháy cho đèn báo đồng bộ */
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
         .cs-wrapper { width: 100%; }
         
@@ -277,7 +279,7 @@
         <p>Dấu "." thay cho "/" khi nhập liệu</p>
         <div class="online-status" id="status-badge">
             <span style="display:inline-block; width:8px; height:8px; background:#48bb78; border-radius:50%; box-shadow: 0 0 5px #48bb78;"></span>
-            CHẾ ĐỘ OFFLINE
+            SẴN SÀNG NHẬP LIỆU
         </div>
     </div>
 </div>
@@ -326,7 +328,7 @@
         <div class="cs-card" id="cs-form-container"></div>
         
         <button class="cs-btn cs-btn-save" id="btn-save" onclick="saveStation()">
-            💾 LƯU TRẠM NÀY
+            💾 LƯU TRẠM & ĐỒNG BỘ CLOUD
         </button>
     </div>
 </div>
@@ -495,12 +497,12 @@ function saveStation() {
         document.getElementById(param.id).value = ''; 
     });
     
-    // FIX 2: Sửa lỗi ghi đè dữ liệu sai khi đang ở chế độ Edit
+    // 1. XỬ LÝ LƯU LOCALSTORAGE (LƯU TRỮ CỤC BỘ NHƯ TRƯỚC ĐÂY)
     if (isEditingIndex !== -1) {
         savedData[isEditingIndex] = stationData; 
         isEditingIndex = -1; 
         let btnSave = document.getElementById('btn-save');
-        btnSave.innerHTML = '💾 LƯU TRẠM NÀY'; 
+        btnSave.innerHTML = '💾 LƯU TRẠM & ĐỒNG BỘ CLOUD'; 
         btnSave.style.background = 'var(--primary-gradient)';
         btnSave.style.color = 'white';
     } else { 
@@ -508,11 +510,61 @@ function saveStation() {
     }
     
     savedData.sort((a, b) => a.ten_tram.localeCompare(b.ten_tram));
-    
     localStorage.setItem('ln1_checksheet_data', JSON.stringify(savedData));
+    updateSavedList();
+
+    // -----------------------------------------------------
+    // 2. XỬ LÝ ĐẨY LÊN GOOGLE SHEETS QUA API (TELEMETRY)
+    // -----------------------------------------------------
+    // Đổi dòng trạng thái để báo hiệu đang truyền tải gói tin (giống đèn TX/RX trên rơ le)
+    const statusBadge = document.getElementById('status-badge');
+    statusBadge.innerHTML = '<span style="display:inline-block; width:8px; height:8px; background:#F6E05E; border-radius:50%; box-shadow: 0 0 5px #F6E05E; animation: blink 1s infinite;"></span> ĐANG ĐỒNG BỘ CLOUD...';
+
+    const nguoiKiemTra = document.getElementById('nguoi_kiem_tra').value || "Chưa nhập";
+    const ngayKiemTra = document.getElementById('ngay_kiem_tra').value || new Date().toLocaleDateString('vi-VN');
+
+    // Tạo một mảng phẳng (flat array) khớp với các cột trên Google Sheets
+    let flatData = [
+        new Date().toLocaleString('vi-VN'), // Dấu thời gian hệ thống ghi nhận
+        nguoiKiemTra,
+        ngayKiemTra,
+        stationData.ten_tram,
+        stationData.thoi_gian
+    ];
+
+    // Duyệt qua csParameters để nhét số liệu vào mảng theo đúng thứ tự
+    csParameters.forEach(param => {
+        flatData.push(stationData.values[param.id] || "");
+    });
+
+    // ⚠️ LƯU Ý: HÃY DÁN ĐƯỜNG LINK WEB APP CỦA GOOGLE APPS SCRIPT VÀO ĐÂY SAU KHI DEPLOY Ở BƯỚC TRƯỚC
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbygPvCl2AZPotd3dBnpE9AGmGuoXnkgYWqnpGS-uOltrvapXVcGrGK2HZFIetJ9K3pCWA/exec'; 
+
+    // Giao thức Fetch API để gửi POST Request tới "hệ thống SCADA" (Google Sheets)
+    if(navigator.onLine && scriptURL !== 'YOUR_WEB_APP_URL_HERE') {
+        fetch(scriptURL, {
+            method: 'POST',
+            // Phải dùng text/plain để tránh lỗi CORS Preflight
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ data: flatData })
+        })
+        .then(response => response.json())
+        .then(result => {
+            if(result.status === "success") {
+                statusBadge.innerHTML = '<span style="display:inline-block; width:8px; height:8px; background:#48bb78; border-radius:50%; box-shadow: 0 0 5px #48bb78;"></span> ĐÃ ĐỒNG BỘ SHEETS';
+            }
+        })
+        .catch(error => {
+            console.error('Lỗi API:', error);
+            statusBadge.innerHTML = '<span style="display:inline-block; width:8px; height:8px; background:#E53E3E; border-radius:50%; box-shadow: 0 0 5px #E53E3E;"></span> LƯU OFFLINE (LỖI ĐƯỜNG TRUYỀN)';
+        });
+    } else {
+        statusBadge.innerHTML = '<span style="display:inline-block; width:8px; height:8px; background:#E53E3E; border-radius:50%; box-shadow: 0 0 5px #E53E3E;"></span> LƯU OFFLINE (KHÔNG CÓ MẠNG HOẶC CHƯA GẮN LINK)';
+    }
+    // -----------------------------------------------------
+
     document.getElementById('ten_tram').value = ''; 
     document.getElementById('thoi_gian').value = ''; 
-    updateSavedList(); 
     document.getElementById('ten_tram').focus();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -529,7 +581,6 @@ function editStation(index, event) {
             if (el) el.value = station.values[p.id] || "";
         });
         
-        // FIX 3: Đã xóa dòng "savedData.splice(index, 1);" để tránh lỗi mất data khi chưa lưu lại
         isEditingIndex = index;
         
         let btnSave = document.getElementById('btn-save');
@@ -683,7 +734,6 @@ async function exportRealExcel() {
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         
-        // FIX 4: Sửa cách tải file Excel trên iOS (bằng cách tạo thẻ link ảo)
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
         link.download = `Checksheet_LN1_${formattedDate.replace(/\//g, '')}.xlsx`;
