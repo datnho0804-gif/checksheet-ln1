@@ -101,7 +101,6 @@
             animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        /* CSS tạo hiệu ứng nhấp nháy cho đèn báo đồng bộ */
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
         .cs-wrapper { width: 100%; }
@@ -128,7 +127,23 @@
             border: 1px solid rgba(255,255,255,0.8);
             transition: transform 0.2s ease;
         }
+
+        /* ----- CSS MỚI CHO GRID 2 CỘT ----- */
+        .input-grid {
+            display: grid;
+            grid-template-columns: 2fr 1.2fr;
+            gap: 16px;
+        }
+
+        .group-left label, .group-right label { 
+            font-size: 13px; font-weight: 600; margin-bottom: 6px; display: block; color: var(--text-main);
+        }
         
+        .small-input input { 
+            font-size: 14px !important; padding: 12px 8px !important; 
+        }
+        /* ---------------------------------- */
+
         .cs-group-title { 
             background: #EDF2F7; 
             padding: 10px 14px; 
@@ -145,7 +160,7 @@
         
         .cs-form-group { margin-bottom: 16px; display: flex; flex-direction: column; }
         .cs-form-group label { font-size: 14px; margin-bottom: 8px; font-weight: 600; color: var(--text-main);}
-        .cs-form-group input { 
+        .cs-form-group input, .input-grid input { 
             width: 100%; 
             padding: 12px 14px; 
             border: 1.5px solid var(--border); 
@@ -156,7 +171,7 @@
             background-color: #F8FAFC;
             transition: all 0.2s ease;
         }
-        .cs-form-group input:focus { 
+        .cs-form-group input:focus, .input-grid input:focus:not([readonly]) { 
             border-color: #FF7E5F; 
             outline: none; 
             background-color: #FFF; 
@@ -171,9 +186,6 @@
         }
         .cs-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(255, 126, 95, 0.3); }
         .cs-btn-save { background: var(--primary-gradient); }
-        
-        .cs-global-info { display: flex; gap: 20px; }
-        .cs-global-info .cs-form-group { flex: 1; }
         
         .cs-wrapper details { 
             background: var(--card); padding: 12px 16px; border-radius: 10px; 
@@ -200,17 +212,17 @@
         .cs-data-table td:nth-child(2) { font-weight: 700; text-align: right; color: var(--secondary); }
         
         .station-input-wrapper { 
-            display: flex; align-items: stretch; border: 2px solid var(--border); 
+            display: flex; align-items: stretch; border: 1.5px solid var(--border); 
             border-radius: 8px; overflow: hidden; background: #F8FAFC; transition: all 0.2s ease;
         }
         .station-input-wrapper:focus-within { border-color: #FF7E5F; box-shadow: var(--focus-ring); background: #FFF; }
         .station-prefix { 
             background: #EDF2F7; color: var(--secondary); padding: 12px 18px; 
-            font-weight: 800; font-size: 18px; border-right: 1px solid var(--border); display: flex; align-items: center;
+            font-weight: 800; font-size: 16px; border-right: 1.5px solid var(--border); display: flex; align-items: center;
         }
         .station-input-wrapper input { 
-            border: none; border-radius: 0; outline: none; background: transparent;
-            font-size: 20px; color: #FF7E5F; text-align: center; padding-left: 0;
+            border: none !important; border-radius: 0; outline: none; background: transparent;
+            font-size: 18px; color: #FF7E5F; text-align: left;
         }
 
         .bottom-nav {
@@ -245,29 +257,9 @@
             font-weight: 600;
         }
 
-        .fab {
-            position: fixed;
-            bottom: 85px; 
-            right: 20px;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            color: white;
-            font-size: 24px;
-            border: none;
-            box-shadow: 0 4px 12px rgba(255, 126, 95, 0.4);
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
         @media (max-width: 600px) {
-            .cs-global-info { flex-direction: column; gap: 0; }
             .header-title h1 { font-size: 18px; }
+            .input-grid { gap: 10px; }
         }
     </style>
 </head>
@@ -286,7 +278,7 @@
 
 <div class="container">
     <div class="cs-wrapper">
-        <h2 class="cs-page-title">TRẠM HỢP BỘ LỘC NINH 1</h2>
+        <h2 class="cs-page-title">THÔNG SỐ TRẠM HỢP BỘ</h2>
         <div class="cs-status" id="cs-status-text">Đã lưu: 0 Trạm</div>
         
         <div class="cs-card" id="cs-saved-stations-card" style="display: none; border-left: 5px solid var(--success);">
@@ -299,28 +291,26 @@
         </div>
 
         <div class="cs-card">
-            <div class="cs-global-info">
-                <div class="cs-form-group">
+            <div class="input-grid">
+                <div class="group-left">
                     <label>Người kiểm tra</label>
                     <input type="text" id="nguoi_kiem_tra" placeholder="VD: Thành Đạt">
                 </div>
-                <div class="cs-form-group">
+                <div class="group-right small-input">
                     <label>Ngày kiểm tra</label>
-                    <input type="date" id="ngay_kiem_tra">
+                    <input type="date" id="ngay_kiem_tra" readonly tabindex="-1" style="background-color: #E2E8F0; color: #4A5568; font-weight: 600;">
                 </div>
-            </div>
-            <hr style="border: 0; border-top: 1px dashed #CBD5E0; margin: 20px 0;">
-            <div class="cs-global-info">
-                <div class="cs-form-group">
+
+                <div class="group-left">
                     <label>Tên Trạm (Chỉ nhập số)</label>
                     <div class="station-input-wrapper">
                         <span class="station-prefix">T</span>
-                        <input type="tel" id="ten_tram" maxlength="2" placeholder="VD:39" oninput="handleStationInput(this)" style="font-weight: 800;">
+                        <input type="tel" id="ten_tram" maxlength="2" placeholder="00" oninput="handleStationInput(this)" style="font-weight: 800;">
                     </div>
                 </div>
-                <div class="cs-form-group">
+                <div class="group-right small-input">
                     <label>Thời gian</label>
-                    <input type="time" id="thoi_gian">
+                    <input type="time" id="thoi_gian" readonly tabindex="-1" style="background-color: #E2E8F0; color: #4A5568; font-weight: 600;">
                 </div>
             </div>
         </div>
@@ -328,16 +318,19 @@
         <div class="cs-card" id="cs-form-container"></div>
         
         <button class="cs-btn cs-btn-save" id="btn-save" onclick="saveStation()">
-            💾 LƯU TRẠM & ĐỒNG BỘ CLOUD
+            💾 LƯU THÔNG SỐ TRẠM
         </button>
-    <div class="bottom-nav">
+    </div>
+</div>
+    
+<div class="bottom-nav">
     <button onclick="scrollToTop()">
         🏠
         <span>Trang chủ</span>
     </button>
     <button onclick="exportRealExcel()">
         📊
-        <span>Xuất Excel</sspan
+        <span>Xuất Excel</span>
     </button>
 </div>
 
@@ -417,16 +410,34 @@ function updateSavedList() {
     });
 }
 
+// THAY ĐỔI: Tự động nhảy dòng khi nhập đủ 2 số trạm
 function handleStationInput(el) {
     el.value = el.value.replace(/[^0-9]/g, '');
-    if (el.value.length === 2 && !document.getElementById('thoi_gian').value) {
-        const now = new Date(); 
-        document.getElementById('thoi_gian').value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    if (el.value.length === 2) {
+        if (!document.getElementById('thoi_gian').value) {
+            const now = new Date(); 
+            document.getElementById('thoi_gian').value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        }
+        
+        // Chờ 150ms để user kịp nhìn thấy số, sau đó focus vào ô đầu tiên (Dòng điện RMU)
+        setTimeout(() => {
+            const firstInput = document.getElementById('rmu_dongdien');
+            if (firstInput) {
+                firstInput.focus();
+                firstInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 150);
+    } else {
+        // Xóa giờ nếu user xóa bớt số trạm
+        document.getElementById('thoi_gian').value = '';
     }
 }
 
 function initChecksheet() {
-    document.getElementById('ngay_kiem_tra').valueAsDate = new Date();
+    // THAY ĐỔI: Lấy ngày định dạng chuẩn giờ Việt Nam, tránh lỗi lệch múi giờ (GMT)
+    const today = new Date().toLocaleDateString('en-CA');
+    document.getElementById('ngay_kiem_tra').value = today;
+    
     const container = document.getElementById('cs-form-container'); 
     let currentGroup = '';
     csParameters.forEach(param => {
@@ -477,7 +488,7 @@ function saveStation() {
     const thoiGian = document.getElementById('thoi_gian').value;
     
     if (!numStr || !thoiGian) { 
-        alert("⚠️ Vui lòng nhập số Trạm và Thời gian!"); 
+        alert("⚠️ Vui lòng nhập số Trạm!"); 
         document.getElementById('ten_tram').focus(); return; 
     }
     let tenTram = "T" + numStr.padStart(2, '0'); 
@@ -488,7 +499,6 @@ function saveStation() {
         document.getElementById(param.id).value = ''; 
     });
     
-    // 1. XỬ LÝ LƯU LOCALSTORAGE (LƯU TRỮ CỤC BỘ NHƯ TRƯỚC ĐÂY)
     if (isEditingIndex !== -1) {
         savedData[isEditingIndex] = stationData; 
         isEditingIndex = -1; 
@@ -504,35 +514,26 @@ function saveStation() {
     localStorage.setItem('ln1_checksheet_data', JSON.stringify(savedData));
     updateSavedList();
 
-    // -----------------------------------------------------
-    // 2. XỬ LÝ ĐẨY LÊN GOOGLE SHEETS QUA API (TELEMETRY)
-    // -----------------------------------------------------
-    // Đổi dòng trạng thái để báo hiệu đang truyền tải gói tin (giống đèn TX/RX trên rơ le)
     const statusBadge = document.getElementById('status-badge');
     statusBadge.innerHTML = '<span style="display:inline-block; width:8px; height:8px; background:#F6E05E; border-radius:50%; box-shadow: 0 0 5px #F6E05E; animation: blink 1s infinite;"></span> ĐANG ĐỒNG BỘ CLOUD...';
 
     const nguoiKiemTra = document.getElementById('nguoi_kiem_tra').value || "Chưa nhập";
     const ngayKiemTra = document.getElementById('ngay_kiem_tra').value || new Date().toLocaleDateString('vi-VN');
 
-    // Tạo một mảng phẳng (flat array) khớp với các cột trên Google Sheets
     let flatData = [
-        new Date().toLocaleString('vi-VN'), // Dấu thời gian hệ thống ghi nhận
+        new Date().toLocaleString('vi-VN'),
         nguoiKiemTra,
         ngayKiemTra,
         stationData.ten_tram,
         stationData.thoi_gian
     ];
 
-    // Duyệt qua csParameters để nhét số liệu vào mảng theo đúng thứ tự
     csParameters.forEach(param => {
         flatData.push(stationData.values[param.id] || "");
     });
 
-    // ĐƯỜNG LINK WEB APP CỦA GOOGLE APPS SCRIPT
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyOzv13TgAI3_z7iFDs43b5LwjQtY85eZex0A7ZLmZkTN1ixM3p2EUNKgT0_N-ML1IQhg/exec'; 
 
-    // Giao thức Fetch API để gửi POST Request tới "hệ thống SCADA" (Google Sheets)
-    // SỬA Ở ĐÂY: Thêm redirect: 'follow' để bám sát luồng điều hướng của Google
     if(navigator.onLine && scriptURL !== '') {
         fetch(scriptURL, {
             method: 'POST',
@@ -553,8 +554,6 @@ function saveStation() {
     } else {
         statusBadge.innerHTML = '<span style="display:inline-block; width:8px; height:8px; background:#E53E3E; border-radius:50%; box-shadow: 0 0 5px #E53E3E;"></span> LƯU OFFLINE (MẤT MẠNG)';
     }
-
-    // -----------------------------------------------------
 
     document.getElementById('ten_tram').value = ''; 
     document.getElementById('thoi_gian').value = ''; 
