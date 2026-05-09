@@ -344,30 +344,30 @@ const csParameters = [
     { id: 'mba_mucdau', label: '1. Mức dầu', group: 'Transformer', format: '2' },
     { id: 'mba_nd_cuonday', label: '2. Nhiệt độ cuộn dây/max', group: 'Transformer', format: 'auto_2_2' },
     { id: 'mba_nd_dau', label: '3. Nhiệt độ dầu/max', group: 'Transformer', format: 'auto_2_2' },
-    { id: 'mba_nd_cuonday_scada', label: '4. Nhiệt độ cuộn dây SCADA', group: 'Transformer', format: '2' },
-    { id: 'mba_nd_dau_scada', label: '5. Nhiệt độ dầu SCADA', group: 'Transformer', format: '2' },
+    { id: 'mba_nd_cuonday_scada', label: '4. Nhiệt độ cuộn dây SCADA', group: 'Transformer', format: '3' },
+    { id: 'mba_nd_dau_scada', label: '5. Nhiệt độ dầu SCADA', group: 'Transformer', format: '3' },
     { id: 'inv1_congsuat', label: '1. Công suất MW', group: 'Inverter 1', format: '4' },
     { id: 'inv1_igbt1', label: '2. Nhiệt độ IGBT U1 PM1/3/5', group: 'Inverter 1', format: 'auto_2_2_2' },
     { id: 'inv1_igbt2', label: '3. Nhiệt độ IGBT U2 PM1/3/5', group: 'Inverter 1', format: 'auto_2_2_2' },
     { id: 'inv1_quat', label: '4. Tốc độ quạt U1/U2', group: 'Inverter 1', format: 'var_4_4' },
-    { id: 'inv1_dongro', label: '5. Dòng rò U1/U2', group: 'Inverter 1', format: '2' },
+    { id: 'inv1_dongro', label: '5. Dòng rò U1/U2', group: 'Inverter 1', format: 'var_3_3' },
     { id: 'inv1_cuoncam', label: '6. Nhiệt độ cuộn cảm (L) U1/U2', group: 'Inverter 1', format: 'var_3_3' },
-    { id: 'inv1_khoanginv', label: '7. Nhiệt độ khoang INV U1/U2', group: 'Inverter 1', format: 'auto_2_2' },
-    { id: 'inv1_khoangac', label: '8. Nhiệt độ khoang AC U1/U2', group: 'Inverter 1', format: 'auto_2_2' },
+    { id: 'inv1_khoanginv', label: '7. Nhiệt độ khoang INV U1/U2', group: 'Inverter 1', format: 'var_3_3' },
+    { id: 'inv1_khoangac', label: '8. Nhiệt độ khoang AC U1/U2', group: 'Inverter 1', format: 'var_3_3' },
     { id: 'inv1_vgnd', label: '9. Negative Vgnd', group: 'Inverter 1', format: 'var_3_3' },
     { id: 'inv1_cachdien', label: '10. Điện trở cách điện phía AC', group: 'Inverter 1', format: '4' },
-    { id: 'inv1_thanhcai', label: '11. Nhiệt độ thanh cái U1/U2', group: 'Inverter 1', format: 'auto_2_2' },
+    { id: 'inv1_thanhcai', label: '11. Nhiệt độ thanh cái U1/U2', group: 'Inverter 1', format: 'var_3_3' },
     { id: 'inv2_congsuat', label: '1. Công suất MW', group: 'Inverter 2', format: '4' },
     { id: 'inv2_igbt1', label: '2. Nhiệt độ IGBT U1 PM1/3/5', group: 'Inverter 2', format: 'auto_2_2_2' },
     { id: 'inv2_igbt2', label: '3. Nhiệt độ IGBT U2 PM1/3/5', group: 'Inverter 2', format: 'auto_2_2_2' },
     { id: 'inv2_quat', label: '4. Tốc độ quạt U1/U2', group: 'Inverter 2', format: 'var_4_4' },
-    { id: 'inv2_dongro', label: '5. Dòng rò U1/U2', group: 'Inverter 2', format: '2' },
+    { id: 'inv2_dongro', label: '5. Dòng rò U1/U2', group: 'Inverter 2', format: 'var_3_3' },
     { id: 'inv2_cuoncam', label: '6. Nhiệt độ cuộn cảm (L) U1/U2', group: 'Inverter 2', format: 'var_3_3' },
-    { id: 'inv2_khoanginv', label: '7. Nhiệt độ khoang INV U1/U2', group: 'Inverter 2', format: 'auto_2_2' },
-    { id: 'inv2_khoangac', label: '8. Nhiệt độ khoang AC U1/U2', group: 'Inverter 2', format: 'auto_2_2' },
+    { id: 'inv2_khoanginv', label: '7. Nhiệt độ khoang INV U1/U2', group: 'Inverter 2', format: 'var_3_3' },
+    { id: 'inv2_khoangac', label: '8. Nhiệt độ khoang AC U1/U2', group: 'Inverter 2', format: 'var_3_3' },
     { id: 'inv2_vgnd', label: '9. Negative Vgnd', group: 'Inverter 2', format: 'var_3_3' },
     { id: 'inv2_cachdien', label: '10. Điện trở cách điện phía AC', group: 'Inverter 2', format: '4' },
-    { id: 'inv2_thanhcai', label: '11. Nhiệt độ thanh cái U1/U2', group: 'Inverter 2', format: 'auto_2_2' }
+    { id: 'inv2_thanhcai', label: '11. Nhiệt độ thanh cái U1/U2', group: 'Inverter 2', format: 'var_3_3' }
 ];
 
 // ==========================================
@@ -443,14 +443,13 @@ function initChecksheet() {
     });
 }
 
-// Logic: Đếm số lượng ký tự sau dấu / để quyết định việc nhảy ô
 function handleInput(e, format, id) {
     if (!format) return; 
     let val = e.target.value.replace(/,/g, '.'); 
     if (id !== 'rmu_sf6') val = val.replace(/\./g, '/');
     val = val.replace(/[^0-9\.\/]/g, ''); 
     let maxLength = 999;
-    let shouldJump = false; // Biến cờ hiệu báo nhảy dòng
+    let shouldJump = false; 
     
     if (format === '2') { 
         maxLength = 2; 
@@ -465,38 +464,42 @@ function handleInput(e, format, id) {
         shouldJump = (val.length === maxLength); 
     }
     else if (format === 'auto_2_2_2') {
-        maxLength = 8; 
-        if (val.includes('/')) {
-            let parts = val.split('/');
-            val = parts[0].substring(0,2) + (parts.length > 1 ? '/' + parts[1].substring(0,2) : '') + (parts.length > 2 ? '/' + parts[2].substring(0,2) : '');
-            shouldJump = (parts.length > 2 && parts[2].length === 2);
-        } else {
-            let nums = val.replace(/\//g, '');
-            if (nums.length > 2) nums = nums.substring(0,2) + '/' + nums.substring(2);
-            if (nums.length > 5) nums = nums.substring(0,5) + '/' + nums.substring(5);
-            val = nums.substring(0, 8);
-            shouldJump = (val.length === 8);
+        maxLength = 11; 
+        let parts = val.split('/');
+        
+        val = parts[0].substring(0,3) + 
+              (parts.length > 1 ? '/' + parts[1].substring(0,3) : '') + 
+              (parts.length > 2 ? '/' + parts[2].substring(0,3) : '');
+              
+        parts = val.split('/');
+
+        if (e.inputType !== 'deleteContentBackward') {
+            if (parts.length === 1 && parts[0].length === 2) val += '/';
+            else if (parts.length === 2 && parts[1].length === 2) val += '/';
         }
+        
+        shouldJump = (parts.length === 3 && parts[2].length >= 2);
     }
     else if (format === 'auto_2_2') { 
-        maxLength = 5; 
-        if (val.includes('/')) {
-            let parts = val.split('/');
-            val = parts[0].substring(0,2) + (parts.length > 1 ? '/' + parts[1].substring(0,2) : '');
-            shouldJump = (parts.length > 1 && parts[1].length === 2);
-        } else {
-            let nums = val.replace(/\//g, ''); 
-            if (nums.length > 2) nums = nums.substring(0,2) + '/' + nums.substring(2); 
-            val = nums.substring(0, 5); 
-            shouldJump = (val.length === 5);
+        maxLength = 7; 
+        let parts = val.split('/');
+        
+        val = parts[0].substring(0,3) + 
+              (parts.length > 1 ? '/' + parts[1].substring(0,3) : '');
+              
+        parts = val.split('/');
+        
+        if (e.inputType !== 'deleteContentBackward') {
+            if (parts.length === 1 && parts[0].length === 2) val += '/';
         }
+        
+        shouldJump = (parts.length === 2 && parts[1].length >= 2); 
     }
     else if (format === 'var_4_4') {
         maxLength = 9; 
         if (val.includes('/')) {
             let parts = val.split('/');
             val = parts[0].substring(0,4) + (parts.length > 1 ? '/' + parts[1].substring(0,4) : '');
-            // Nhảy nếu vế sau dấu / đủ 4 số
             shouldJump = (parts.length > 1 && parts[1].length === 4); 
         } else {
             if (val.length > 4) val = val.substring(0,4) + '/' + val.substring(4);
@@ -509,7 +512,6 @@ function handleInput(e, format, id) {
         if (val.includes('/')) {
             let parts = val.split('/');
             val = parts[0].substring(0,3) + (parts.length > 1 ? '/' + parts[1].substring(0,3) : '');
-            // Nhảy nếu vế sau dấu / đủ 3 số
             shouldJump = (parts.length > 1 && parts[1].length === 3);
         } else {
             if (val.length > 3) val = val.substring(0,3) + '/' + val.substring(3);
@@ -521,7 +523,6 @@ function handleInput(e, format, id) {
     if (val.length > maxLength) val = val.substring(0, maxLength); 
     e.target.value = val;
     
-    // Thực thi lệnh nhảy ô dựa trên cờ hiệu
     if (shouldJump) {
         let inputs = Array.from(document.querySelectorAll('#cs-form-container input'));
         let index = inputs.indexOf(e.target); 
@@ -549,7 +550,7 @@ function saveStation() {
         savedData[isEditingIndex] = stationData; 
         isEditingIndex = -1; 
         let btnSave = document.getElementById('btn-save');
-        btnSave.innerHTML = '💾 LƯU TRẠM & ĐỒNG BỘ CLOUD'; 
+        btnSave.innerHTML = '💾 LƯU THÔNG SỐ TRẠM'; 
         btnSave.style.background = 'var(--primary-gradient)';
         btnSave.style.color = 'white';
     } else { 
@@ -744,8 +745,12 @@ async function exportRealExcel() {
                 cell.alignment = centerAlign;
                 
                 if(sourceRowIndex) {
-                    if (formulaType === 'RIGHT') cell.value = { formula: `RIGHT(${colLtr}${sourceRowIndex}, 2)` };
-                    else if (formulaType === 'LEFT') cell.value = { formula: `LEFT(${colLtr}${sourceRowIndex}, 2)` };
+                    if (formulaType === 'RIGHT') {
+                        cell.value = { formula: `IFERROR(RIGHT(${colLtr}${sourceRowIndex}, LEN(${colLtr}${sourceRowIndex}) - FIND("/", ${colLtr}${sourceRowIndex})), "")` };
+                    }
+                    else if (formulaType === 'LEFT') {
+                        cell.value = { formula: `IFERROR(LEFT(${colLtr}${sourceRowIndex}, FIND("/", ${colLtr}${sourceRowIndex}) - 1), ${colLtr}${sourceRowIndex})` };
+                    }
                     else cell.value = { formula: `${colLtr}${sourceRowIndex}` }; 
                 }
             });
