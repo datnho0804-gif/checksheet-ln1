@@ -334,7 +334,7 @@
 
 <script>
 // ==========================================
-// 1. CẤU HÌNH THÔNG SỐ
+// 1. CẤU HÌNH THÔNG SỐ (Đã cấu hình chuẩn)
 // ==========================================
 const csParameters = [
     { id: 'rmu_dongdien', label: '1. Dòng điện phase A/B/C', group: 'RMU', format: '2' },
@@ -344,30 +344,30 @@ const csParameters = [
     { id: 'mba_mucdau', label: '1. Mức dầu', group: 'Transformer', format: '2' },
     { id: 'mba_nd_cuonday', label: '2. Nhiệt độ cuộn dây/max', group: 'Transformer', format: 'auto_2_2' },
     { id: 'mba_nd_dau', label: '3. Nhiệt độ dầu/max', group: 'Transformer', format: 'auto_2_2' },
-    { id: 'mba_nd_cuonday_scada', label: '4. Nhiệt độ cuộn dây SCADA', group: 'Transformer', format: '3' },
-    { id: 'mba_nd_dau_scada', label: '5. Nhiệt độ dầu SCADA', group: 'Transformer', format: '3' },
+    { id: 'mba_nd_cuonday_scada', label: '4. Nhiệt độ cuộn dây SCADA', group: 'Transformer', format: '2' },
+    { id: 'mba_nd_dau_scada', label: '5. Nhiệt độ dầu SCADA', group: 'Transformer', format: '2' },
     { id: 'inv1_congsuat', label: '1. Công suất MW', group: 'Inverter 1', format: '4' },
     { id: 'inv1_igbt1', label: '2. Nhiệt độ IGBT U1 PM1/3/5', group: 'Inverter 1', format: 'auto_2_2_2' },
     { id: 'inv1_igbt2', label: '3. Nhiệt độ IGBT U2 PM1/3/5', group: 'Inverter 1', format: 'auto_2_2_2' },
     { id: 'inv1_quat', label: '4. Tốc độ quạt U1/U2', group: 'Inverter 1', format: 'var_4_4' },
-    { id: 'inv1_dongro', label: '5. Dòng rò U1/U2', group: 'Inverter 1', format: 'var_3_3' },
+    { id: 'inv1_dongro', label: '5. Dòng rò U1/U2', group: 'Inverter 1', format: '2' },
     { id: 'inv1_cuoncam', label: '6. Nhiệt độ cuộn cảm (L) U1/U2', group: 'Inverter 1', format: 'var_3_3' },
-    { id: 'inv1_khoanginv', label: '7. Nhiệt độ khoang INV U1/U2', group: 'Inverter 1', format: 'var_3_3' },
-    { id: 'inv1_khoangac', label: '8. Nhiệt độ khoang AC U1/U2', group: 'Inverter 1', format: 'var_3_3' },
+    { id: 'inv1_khoanginv', label: '7. Nhiệt độ khoang INV U1/U2', group: 'Inverter 1', format: 'auto_2_2' },
+    { id: 'inv1_khoangac', label: '8. Nhiệt độ khoang AC U1/U2', group: 'Inverter 1', format: 'auto_2_2' },
     { id: 'inv1_vgnd', label: '9. Negative Vgnd', group: 'Inverter 1', format: 'var_3_3' },
     { id: 'inv1_cachdien', label: '10. Điện trở cách điện phía AC', group: 'Inverter 1', format: '4' },
-    { id: 'inv1_thanhcai', label: '11. Nhiệt độ thanh cái U1/U2', group: 'Inverter 1', format: 'var_3_3' },
+    { id: 'inv1_thanhcai', label: '11. Nhiệt độ thanh cái U1/U2', group: 'Inverter 1', format: 'auto_2_2' },
     { id: 'inv2_congsuat', label: '1. Công suất MW', group: 'Inverter 2', format: '4' },
     { id: 'inv2_igbt1', label: '2. Nhiệt độ IGBT U1 PM1/3/5', group: 'Inverter 2', format: 'auto_2_2_2' },
     { id: 'inv2_igbt2', label: '3. Nhiệt độ IGBT U2 PM1/3/5', group: 'Inverter 2', format: 'auto_2_2_2' },
     { id: 'inv2_quat', label: '4. Tốc độ quạt U1/U2', group: 'Inverter 2', format: 'var_4_4' },
-    { id: 'inv2_dongro', label: '5. Dòng rò U1/U2', group: 'Inverter 2', format: 'var_3_3' },
+    { id: 'inv2_dongro', label: '5. Dòng rò U1/U2', group: 'Inverter 2', format: '2' },
     { id: 'inv2_cuoncam', label: '6. Nhiệt độ cuộn cảm (L) U1/U2', group: 'Inverter 2', format: 'var_3_3' },
-    { id: 'inv2_khoanginv', label: '7. Nhiệt độ khoang INV U1/U2', group: 'Inverter 2', format: 'var_3_3' },
-    { id: 'inv2_khoangac', label: '8. Nhiệt độ khoang AC U1/U2', group: 'Inverter 2', format: 'var_3_3' },
+    { id: 'inv2_khoanginv', label: '7. Nhiệt độ khoang INV U1/U2', group: 'Inverter 2', format: 'auto_2_2' },
+    { id: 'inv2_khoangac', label: '8. Nhiệt độ khoang AC U1/U2', group: 'Inverter 2', format: 'auto_2_2' },
     { id: 'inv2_vgnd', label: '9. Negative Vgnd', group: 'Inverter 2', format: 'var_3_3' },
     { id: 'inv2_cachdien', label: '10. Điện trở cách điện phía AC', group: 'Inverter 2', format: '4' },
-    { id: 'inv2_thanhcai', label: '11. Nhiệt độ thanh cái U1/U2', group: 'Inverter 2', format: 'var_3_3' }
+    { id: 'inv2_thanhcai', label: '11. Nhiệt độ thanh cái U1/U2', group: 'Inverter 2', format: 'auto_2_2' }
 ];
 
 // ==========================================
