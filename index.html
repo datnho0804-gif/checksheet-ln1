@@ -276,7 +276,7 @@
 
 <div class="container">
     <div class="cs-wrapper">
-        <h2 class="cs-page-title">THÔNG SỐ TRẠM HỢP BỘ</h2>
+        <h2 class="cs-page-title">THÔNG SỐ TRẠM HỢB BỘ</h2>
         <div class="cs-status" id="cs-status-text">Đã lưu: 0 Trạm</div>
         
         <div class="cs-card" id="cs-saved-stations-card" style="display: none; border-left: 5px solid var(--success);">
@@ -334,7 +334,7 @@
 
 <script>
 // ==========================================
-// 1. CẤU HÌNH THÔNG SỐ (Đã cấu hình chuẩn)
+// 1. CẤU HÌNH THÔNG SỐ
 // ==========================================
 const csParameters = [
     { id: 'rmu_dongdien', label: '1. Dòng điện phase A/B/C', group: 'RMU', format: '2' },
@@ -481,11 +481,11 @@ function handleInput(e, format, id) {
         shouldJump = (parts.length === 3 && parts[2].length >= 2);
     }
     else if (format === 'auto_2_2') { 
-        maxLength = 7; 
+        maxLength = 5; 
         let parts = val.split('/');
         
-        val = parts[0].substring(0,3) + 
-              (parts.length > 1 ? '/' + parts[1].substring(0,3) : '');
+        val = parts[0].substring(0,2) + 
+              (parts.length > 1 ? '/' + parts[1].substring(0,2) : '');
               
         parts = val.split('/');
         
@@ -793,7 +793,7 @@ async function exportRealExcel() {
 }
 
 // ==========================================
-// 4. PHẦN JS NHỎ (TRẢI NGHIỆM APP)
+// 4. TRẢI NGHIỆM APP
 // ==========================================
 function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
